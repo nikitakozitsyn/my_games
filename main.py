@@ -14,8 +14,8 @@ class Matrix:
         grid for storing cells values, cells for visual display grid.
         Checks result file if exists to show best score in current side length mode"""
 
-        self.name = name.title() if name.isalpha() and len(name) < 7 else 'guest'
-        self.side = int(side) if side.isdigit() and 9 > int(side) > 1 else 4
+        self.name = name.title() if name.isalpha() and len(name) < 7 else 'guest'  # name from letters only, length lt 7
+        self.side = int(side) if side.isdigit() and 9 > int(side) > 1 else 4  # side length only lt 9 and gt 1
         self.score = 0
         self.is_update = True
         self.is_lose = [False, {'text': 'LOSE', 'fg': 'Red'}]
@@ -30,7 +30,7 @@ class Matrix:
         if os.path.exists('results.csv'):
             with open('results.csv') as file:
                 results = [row for row in file.read().split('\n')[1:-1] if int(row.split(',')[1]) == self.side]
-                if results:  # displays best result
+                if results:  # displays best result if exists
                     self.record = max(results, key=lambda row: (int(row.split(',')[0]), -results.index(row))).split(',')
                     self.cells[0][-1].config(text=f'Leader:\n{self.record[2]}', fg='Gold')
                     self.cells[1][-1].config(text=f'{self.record[0]}\n{self.record[3].split()[0]}', fg='Gold')
@@ -135,7 +135,7 @@ def create(name, side, prev: tk.Label, root: tk.Tk):
 def start(root: tk.Tk):
     """Calls start window(if no command line arguments), which requests name and side length"""
 
-    root.title('start')
+    root.title('Start')
     name, side = tk.StringVar(), tk.StringVar()
     style = {'font': 'Arial', 'bg': '#333', 'fg': '#FFF'}
     label = tk.Label(**style)
