@@ -18,39 +18,39 @@ class Matrix:
         self.side = int(side) if side.isdigit() and 9 > int(side) > 1 else 4  # side length only lt 9 and gt 1
         self.score = 0
         self.is_update = True
-        self.is_lose = [False, {'text': 'LOSE', 'fg': 'Red'}]
-        self.is_win = [False, {'text': 'WIN', 'fg': 'Green'}]
+        self.is_lose = [False, {'text': 'GAME\nOVER', 'fg': '#F00'}]
+        self.is_win = [False, {'text': 'VICTORY', 'fg': '#0F0'}]
         self.style = {'width': 60 // self.side, 'height': 20 // self.side, 'font': 'Arial 16 bold', 'relief': 'sunken'}
         self.grid = np.ones((self.side, self.side), dtype=int)
         self.cells = np.array([[tk.Label(**self.style) for _ in range(self.side + 1)] for _ in range(self.side + 1)])
         for i in range(self.side + 1):
             for j in range(self.side + 1):
-                self.cells[i][j].config(bg='#333' if max(i, j) == self.side else '#000', fg='White')
+                self.cells[i][j].config(bg='#333' if max(i, j) == self.side else '#000', fg='#FFF')
                 self.cells[i][j].grid(row=i, column=j)
         if os.path.exists('results.csv'):
             with open('results.csv') as file:
                 results = [row for row in file.read().split('\n')[1:-1] if int(row.split(',')[1]) == self.side]
-                if results:  # displays best result if exists
+                if results:  # displays best result in current mode if exists
                     self.record = max(results, key=lambda row: (int(row.split(',')[0]), -results.index(row))).split(',')
                     self.cells[0][-1].config(text=f'LEADER:\n{self.record[2]}', fg='#0FF')
                     self.cells[1][-1].config(text=f'{self.record[0]}\n{self.record[3].split()[0]}', fg='#0FF')
-        self.cells[-1][0].config(text=f'SCORE:\n{self.score}', fg='#888')
+        self.cells[-1][0].config(text=f'SCORE:\n{self.score}', fg='#FF0')
 
-    def binds(self, event):
+    def binds(self, event: tk.Event):
         """Binds events with methods"""
 
         eval(f'self.{event.keysym.lower()}()') if event.keysym in ('Left', 'Right', 'Up', 'Down') else None
         self.update() if self.is_update else None
         self.save_and_exit() if event.keysym == 'Escape' else None
 
-    def check(self):
+    def check(self) -> bool:
         """Checks grid for lose- flag (only if all cells are full)"""
 
         for row, column in zip(self.grid, self.grid.T):
             for i in range(self.side - 1):
                 if row[i] == row[i + 1] or column[i] == column[i + 1]:
-                    return
-        self.is_lose[0] = True
+                    return False
+        return True
 
     def change_labels(self):
         """Transfers grid values to cells values"""
@@ -62,7 +62,7 @@ class Matrix:
         self.cells[-1][0].config(text=f'SCORE:\n{self.score}')
         self.cells[-1][-1].config(self.is_lose[1] if self.is_lose[0] else self.is_win[1] if self.is_win[0] else None)
 
-    def move(self, array):
+    def move(self, array: list):
         """Moves all values in vector given the rules of game"""
 
         top, prev = 0, 1
@@ -85,7 +85,7 @@ class Matrix:
         """Updates grid by inserting value, checking for lose- or win- flag and transferring cells from grid"""
 
         self.insert()
-        self.check() if sum(sum(self.grid > 1)) == self.side ** 2 else None
+        self.is_lose[0] = self.check() if sum(sum(self.grid > 1)) == self.side ** 2 else self.is_lose[0]
         self.is_win[0] = True if sum(sum(self.grid == 2 ** (self.side ** 2 - 2 * self.side + 3))) else self.is_win[0]
         self.change_labels()
         self.is_update = False
