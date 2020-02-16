@@ -123,7 +123,7 @@ class Matrix:
             self.move(column[::-1])
 
 
-def create(root: tk.Tk, prev: tk.Label, name: tk.StringVar, side: tk.StringVar):
+def launch(root: tk.Tk, prev: tk.Label, name: tk.StringVar, side: tk.StringVar):
     """Destroys previous window, calls Matrix object passing name and side length"""
 
     prev.destroy()
@@ -146,7 +146,7 @@ def start(root: tk.Tk):
     tk.Entry(label, textvariable=name, font='Arial', bg='#555', fg='#000').grid(row=0, column=1)
     tk.Label(label, text='side length:', **style).grid(row=1, column=0, sticky='e')
     tk.Entry(label, textvariable=side, font='Arial', bg='#555', fg='#000').grid(row=1, column=1)
-    tk.Button(label, text='launch', **style, command=lambda: create(root, label, name, side)).grid(row=2, column=1)
+    tk.Button(label, text='LAUNCH', **style, command=lambda: launch(root, label, name, side)).grid(row=2, column=1)
 
 
 def main():
