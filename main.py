@@ -32,8 +32,8 @@ class Matrix:
                 results = [row for row in file.read().split('\n')[1:-1] if int(row.split(',')[1]) == self.side]
                 if results:  # displays best result if exists
                     self.record = max(results, key=lambda row: (int(row.split(',')[0]), -results.index(row))).split(',')
-                    self.cells[0][-1].config(text=f'LEADER:\n{self.record[2]}', fg='Gold')
-                    self.cells[1][-1].config(text=f'{self.record[0]}\n{self.record[3].split()[0]}', fg='Gold')
+                    self.cells[0][-1].config(text=f'LEADER:\n{self.record[2]}', fg='#0FF')
+                    self.cells[1][-1].config(text=f'{self.record[0]}\n{self.record[3].split()[0]}', fg='#0FF')
         self.cells[-1][0].config(text=f'SCORE:\n{self.score}', fg='#888')
 
     def binds(self, event):
@@ -123,35 +123,35 @@ class Matrix:
             self.move(column[::-1])
 
 
-def create(name, side, prev: tk.Label, root: tk.Tk):
+def create(root: tk.Tk, prev: tk.Label, name: tk.StringVar, side: tk.StringVar):
     """Destroys previous window, calls Matrix object passing name and side length"""
 
     prev.destroy()
-    matrix = Matrix(name.get() if type(name) != str else name, side.get() if type(side) != str else side)
+    matrix = Matrix(name.get(), side.get())
     root.title(f'Hello, {matrix.name}!')
     root.bind('<Key>', matrix.binds)
 
 
 def start(root: tk.Tk):
-    """Calls start window(if no command line arguments), which requests name and side length"""
+    """Calls start window, which requests name and side length"""
 
     root.title('Input window')
     name, side = tk.StringVar(), tk.StringVar()
     style = {'font': 'Arial', 'bg': '#555', 'fg': '#FFF'}
     label = tk.Label(**style)
     label.pack()
-    tk.Label(label, text='this is 2048 game', **style).grid(row=0, column=2)
+    tk.Label(label, text='this is "2048" game', **style).grid(row=0, column=2)
     tk.Label(label, text='"←, →, ↑, ↓" to move\n"Esc" to save and exit', **style).grid(row=1, column=2, rowspan=2)
     tk.Label(label, text='your name:', **style).grid(row=0, column=0, sticky='e')
     tk.Entry(label, textvariable=name, font='Arial', bg='#555', fg='#000').grid(row=0, column=1)
     tk.Label(label, text='side length:', **style).grid(row=1, column=0, sticky='e')
     tk.Entry(label, textvariable=side, font='Arial', bg='#555', fg='#000').grid(row=1, column=1)
-    tk.Button(label, text='launch', **style, command=lambda: create(name, side, label, root)).grid(row=2, column=1)
+    tk.Button(label, text='launch', **style, command=lambda: create(root, label, name, side)).grid(row=2, column=1)
 
 
 def main():
     root = tk.Tk()
-    start(root) if len(sys.argv) < 2 else create(sys.argv[1], sys.argv[2], tk.Label(), root)
+    start(root)
     root.mainloop()
 
 
