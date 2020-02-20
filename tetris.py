@@ -12,6 +12,8 @@ class Figure:
                [(True, True), (20, 0), (20, 20), (20, 40), (0, 40), (20, 20), 'Blue'],  # J
                [(True, True), (0, 0), (20, 0), (20, 20), (40, 0), (20, 0), 'Pink']]  # T
 
+    POINTS = {0: 0, 1: 100, 2: 300, 3: 700, 4: 1500}
+
     def __init__(self):
         self.score = 0, 0
         self.pause = False
@@ -25,6 +27,7 @@ class Figure:
         self.center = self.figure[-2]
         self.color = self.figure[-1]
         self.object = [window.create_rectangle(x, y, x + 20, y + 20, fill=self.color) for x, y in self.figure[1:-2]]
+        self.speed = 500
         self.motion()
 
     def shift(self):
@@ -34,8 +37,8 @@ class Figure:
                 [window.delete(cell) for cell in self.table if window.coords(cell) and window.coords(cell)[1] == k]
                 [window.move(cell, 0, 20) for cell in self.table if window.coords(cell) and window.coords(cell)[1] < k]
                 tmp = {(i[0], i[1] + 20 * (i[1] < k)) for i in self.heap} | {(i, 0) for i in range(0, 198, 20)}
-                self.heap, counter = tmp, counter + 1
-        self.score = self.score[0] + counter ** 2, self.score[1] + counter
+                self.heap, counter, self.speed = tmp, counter + 1, self.speed - 5
+        self.score = self.score[0] + self.POINTS[counter], self.score[1] + counter
         score.config(text=f'SCORE:\n{self.score[0]}\n\nLINES:\n{self.score[1]}')
 
     def binds(self, event):
@@ -111,7 +114,7 @@ class Figure:
             self.shift()
             self.renew()
         self.draw()
-        None if self.pause else root.after(500, self.motion)
+        None if self.pause else root.after(self.speed, self.motion)
 
 
 root = tk.Tk()
