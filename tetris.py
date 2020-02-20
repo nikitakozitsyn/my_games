@@ -28,15 +28,14 @@ class Figure:
         self.motion()
 
     def shift(self):
-        j = 0
-        while all((i, 380 - j * 20) not in self.heap for i in range(0, 198, 20)):
-            j += 1
-        for cell in self.table:
-            window.move(cell, 0, j * 20)
-        tmp = {(i[0], i[1] + j * 20) for i in self.heap if i[1] < 400 - j * 20} | {(i, 20 * k) for i in
-                                                                                   range(0, 198, 20) for k in range(j)}
-        self.heap = tmp
-        self.score = self.score[0] + j ** 2, self.score[1] + j
+        counter = 0
+        for k in range(0, 398, 20):
+            if all((i, k) not in self.heap for i in range(0, 198, 20)):
+                [window.delete(cell) for cell in self.table if window.coords(cell) and window.coords(cell)[1] == k]
+                [window.move(cell, 0, 20) for cell in self.table if window.coords(cell) and window.coords(cell)[1] < k]
+                tmp = {(i[0], i[1] + 20 * (i[1] < k)) for i in self.heap} | {(i, 0) for i in range(0, 198, 20)}
+                self.heap, counter = tmp, counter + 1
+        self.score = self.score[0] + counter ** 2, self.score[1] + counter
         score.config(text=f'SCORE:\n{self.score[0]}\n\nLINES:\n{self.score[1]}')
 
     def binds(self, event):
