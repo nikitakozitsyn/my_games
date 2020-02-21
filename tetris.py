@@ -118,7 +118,7 @@ class Figure:
 
 
 root = tk.Tk()
-s=tk.Label(bg='#333')
+s = tk.Label(bg='#333')
 s.pack()
 window = tk.Canvas(s, width=298, height=398, bg='#333')
 window.grid(row=0, column=0)
