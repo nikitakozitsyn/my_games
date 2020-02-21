@@ -36,7 +36,7 @@ class Figure:
             if all((i, k) not in self.heap for i in range(2, 198, 20)):
                 [window.delete(cell) for cell in self.table if window.coords(cell) and window.coords(cell)[1] == k]
                 [window.move(cell, 0, 20) for cell in self.table if window.coords(cell) and window.coords(cell)[1] < k]
-                tmp = {(i[0], i[1] + 20 * (i[1] < k)) for i in self.heap} | {(i, 0) for i in range(2, 198, 20)}
+                tmp = {(i[0], i[1] + 20 * (i[1] < k)) for i in self.heap} | {(i, 2) for i in range(2, 198, 20)}
                 self.heap, count, self.speed = tmp, count + 1, self.speed - 4 if self.speed > 300 else self.speed - 2
         self.score = self.score[0] + self.POINTS[count], self.score[1] + count
         score.config(text=f'SCORE:\n{self.score[0]}\n\nLINES:\n{self.score[1]}')
