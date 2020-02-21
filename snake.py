@@ -4,15 +4,15 @@ import tkinter as tk
 
 
 class Matrix:
-    DIRECTIONS = {'Left': (-20, 0), 'Right': (20, 0), 'Up': (0, -20), 'Down': (0, 20)}
+    DIRECTIONS = {'Left': (-10, 0), 'Right': (10, 0), 'Up': (0, -10), 'Down': (0, 10)}
 
     def __init__(self):
-        self.grid = [(i, j) for i in range(0, 400, 20) for j in range(0, 500, 20)]
+        self.grid = [(i, j) for i in range(0, 400, 10) for j in range(0, 500, 10)]
         self.snake_grid = [random.choice(self.grid)]
         self.direction = random.choice(list(self.DIRECTIONS.values()))
-        self.snake = [window.create_rectangle(i, j, i + 20, j + 20, fill='#0F0') for i, j in self.snake_grid]
+        self.snake = [window.create_rectangle(i, j, i + 10, j + 10, fill='#0F0') for i, j in self.snake_grid]
         self.food_grid = random.choice(list(set(self.grid) - set(self.snake_grid)))
-        self.food = [window.create_rectangle(i, j, i + 20, j + 20, fill='#F00') for i, j in [self.food_grid]]
+        self.food = [window.create_rectangle(i, j, i + 10, j + 10, fill='#F00') for i, j in [self.food_grid]]
         self.speed = 200
 
     def motion(self):
@@ -23,17 +23,17 @@ class Matrix:
             self.snake_grid = self.snake_grid[1:]
             window.delete(self.snake[0])
         else:
-            self.speed -= 5
+            self.speed -= 4 if self.speed > 100 else 2 if self.speed > 50 else 1
             window.delete(self.food[0])
             self.food_grid = random.choice(list(set(self.grid) - set(self.snake_grid)))
-            self.food = [window.create_rectangle(i, j, i + 20, j + 20, fill='#F00') for i, j in [self.food_grid]]
+            self.food = [window.create_rectangle(i, j, i + 10, j + 10, fill='#F00') for i, j in [self.food_grid]]
         [window.delete(i) for i in self.snake]
-        self.snake = [window.create_rectangle(i, j, i + 20, j + 20, fill='#0F0') for i, j in self.snake_grid]
+        self.snake = [window.create_rectangle(i, j, i + 10, j + 10, fill='#0F0') for i, j in self.snake_grid]
         root.after(self.speed, self.motion)
 
     def binds(self, event):
         self.direction = self.DIRECTIONS[event.keysym] if event.keysym in (
-        'Left', 'Right', 'Up', 'Down') else self.direction
+            'Left', 'Right', 'Up', 'Down') else self.direction
         sys.exit() if event.keysym == 'Escape' else None
 
 
