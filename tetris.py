@@ -118,10 +118,12 @@ class Figure:
 
 
 root = tk.Tk()
-window = tk.Canvas(width=298, height=398, bg='#333')
+s=tk.Label(bg='#333')
+s.pack()
+window = tk.Canvas(s, width=298, height=398, bg='#333')
 window.grid(row=0, column=0)
-window.create_line(200, 0, 200, 400)
-score = tk.Label(height=25, width=10, bg='#333', font='Arial 12 bold')
+window.create_line(200, 0, 200, 400, fill='#FFF')
+score = tk.Label(s, height=20, width=8, bg='#333', font='Arial 12 bold')
 score.grid(row=0, column=1)
 f = Figure()
 root.bind('<Key>', f.binds)
