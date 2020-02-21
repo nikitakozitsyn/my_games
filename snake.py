@@ -14,6 +14,7 @@ class Matrix:
         self.food_grid = random.choice(list(set(self.grid) - set(self.snake_grid)))
         self.food = [window.create_rectangle(i, j, i + 10, j + 10, fill='#F00') for i, j in [self.food_grid]]
         self.speed = 200
+        self.score = 0
 
     def motion(self):
         self.snake_grid.append((self.snake_grid[-1][0] + self.direction[0], self.snake_grid[-1][1] + self.direction[1]))
@@ -23,6 +24,8 @@ class Matrix:
             self.snake_grid = self.snake_grid[1:]
             window.delete(self.snake[0])
         else:
+            self.score += 1
+            count.config(text=f'SCORE:\n{self.score}')
             self.speed -= 4 if self.speed > 100 else 2 if self.speed > 50 else 1
             window.delete(self.food[0])
             self.food_grid = random.choice(list(set(self.grid) - set(self.snake_grid)))
@@ -39,7 +42,9 @@ class Matrix:
 
 root = tk.Tk()
 window = tk.Canvas(width=398, height=498, bg='#333')
-window.pack()
+window.grid(row=0, column=0)
+count = tk.Label(height=30, width=20, bg='#555', font='Arial 12 bold')
+count.grid(row=0, column=1)
 matrix = Matrix()
 matrix.motion()
 root.bind('<Key>', matrix.binds)
