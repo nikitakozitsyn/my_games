@@ -4,13 +4,13 @@ import tkinter as tk
 
 
 class Figure:
-    FIGURES = [[None, (0, 0), (20, 0), (20, 20), (0, 20), (0, 0), 'White'],  # O
-               [(False, True), (0, 0), (0, 20), (0, 40), (0, 60), (0, 40), 'Grey'],  # I
-               [(False, True), (0, 20), (20, 20), (20, 0), (40, 0), (20, 20), 'Green'],  # S
-               [(False, True), (0, 0), (20, 0), (20, 20), (40, 20), (20, 20), 'Yellow'],  # Z
-               [(True, True), (0, 0), (0, 20), (0, 40), (20, 40), (0, 20), 'Red'],  # L
-               [(True, True), (20, 0), (20, 20), (20, 40), (0, 40), (20, 20), 'Blue'],  # J
-               [(True, True), (0, 0), (20, 0), (20, 20), (40, 0), (20, 0), 'Pink']]  # T
+    FIGURES = [[None, (2, 2), (22, 2), (22, 22), (2, 22), (2, 2), 'White'],  # O
+               [(False, True), (2, 2), (2, 22), (2, 42), (2, 62), (2, 42), 'Grey'],  # I
+               [(False, True), (2, 22), (22, 22), (22, 2), (42, 2), (22, 22), 'Green'],  # S
+               [(False, True), (2, 2), (22, 2), (22, 22), (42, 22), (22, 22), 'Yellow'],  # Z
+               [(True, True), (2, 2), (2, 22), (2, 42), (22, 42), (2, 22), 'Red'],  # L
+               [(True, True), (22, 2), (22, 22), (22, 42), (2, 42), (22, 22), 'Blue'],  # J
+               [(True, True), (2, 2), (22, 2), (22, 22), (42, 2), (22, 2), 'Pink']]  # T
 
     POINTS = {0: 0, 1: 100, 2: 300, 3: 700, 4: 1500}
 
@@ -23,7 +23,7 @@ class Figure:
         self.next = rd.choice(self.FIGURES)
         self.obj = [window.create_rectangle(x + 200, y + 200, x + 220, y + 220, fill=self.next[-1]) for x, y in
                     self.next[1:-2]]
-        self.heap = {(i, j) for i in range(0, 198, 20) for j in range(0, 398, 20)}
+        self.heap = {(i, j) for i in range(2, 198, 20) for j in range(2, 398, 20)}
         self.center = self.figure[-2]
         self.color = self.figure[-1]
         self.object = [window.create_rectangle(x, y, x + 20, y + 20, fill=self.color) for x, y in self.figure[1:-2]]
@@ -32,11 +32,11 @@ class Figure:
 
     def shift(self):
         count = 0
-        for k in range(0, 398, 20):
-            if all((i, k) not in self.heap for i in range(0, 198, 20)):
+        for k in range(2, 398, 20):
+            if all((i, k) not in self.heap for i in range(2, 198, 20)):
                 [window.delete(cell) for cell in self.table if window.coords(cell) and window.coords(cell)[1] == k]
                 [window.move(cell, 0, 20) for cell in self.table if window.coords(cell) and window.coords(cell)[1] < k]
-                tmp = {(i[0], i[1] + 20 * (i[1] < k)) for i in self.heap} | {(i, 0) for i in range(0, 198, 20)}
+                tmp = {(i[0], i[1] + 20 * (i[1] < k)) for i in self.heap} | {(i, 0) for i in range(2, 198, 20)}
                 self.heap, count, self.speed = tmp, count + 1, self.speed - 4 if self.speed > 300 else self.speed - 2
         self.score = self.score[0] + self.POINTS[count], self.score[1] + count
         score.config(text=f'SCORE:\n{self.score[0]}\n\nLINES:\n{self.score[1]}')
@@ -120,9 +120,9 @@ class Figure:
 root = tk.Tk()
 s = tk.Label(bg='#333')
 s.pack()
-window = tk.Canvas(s, width=298, height=398, bg='#333')
+window = tk.Canvas(s, width=301, height=401, bg='#333')
 window.grid(row=0, column=0)
-window.create_line(201, 0, 201, 400, fill='#FFF')
+window.create_line(203, 0, 203, 404, fill='#FFF')
 score = tk.Label(s, height=20, width=8, bg='#333', font='Arial 12 bold')
 score.grid(row=0, column=1)
 f = Figure()
