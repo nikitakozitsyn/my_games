@@ -7,7 +7,7 @@ class Matrix:
     DIRECTIONS = {'Left': (-10, 0), 'Right': (10, 0), 'Up': (0, -10), 'Down': (0, 10)}
 
     def __init__(self):
-        self.grid = [(i, j) for i in range(0, 400, 10) for j in range(0, 500, 10)]
+        self.grid = [(i, j) for i in range(2, 400, 10) for j in range(2, 500, 10)]
         self.snake_grid = [random.choice(self.grid)]
         self.direction = random.choice(list(self.DIRECTIONS.values()))
         self.snake = [window.create_rectangle(i, j, i + 10, j + 10, fill='#0F0') for i, j in self.snake_grid]
@@ -41,9 +41,11 @@ class Matrix:
 
 
 root = tk.Tk()
-window = tk.Canvas(width=398, height=498, bg='#333')
+s = tk.Label(bg='#333')
+s.pack()
+window = tk.Canvas(s, width=401, height=501, bg='#333')
 window.grid(row=0, column=0)
-count = tk.Label(height=30, width=20, bg='#555', font='Arial 12 bold')
+count = tk.Label(s, height=26, width=8, bg='#333', font='Arial 12 bold', text='SCORE:\n0')
 count.grid(row=0, column=1)
 matrix = Matrix()
 matrix.motion()
