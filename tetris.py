@@ -46,15 +46,15 @@ class Figure:
         score.config(text=f'SCORE:\n{self.score[0]}\n\nLINES:\n{self.score[1]}')
 
     def binds(self, event):
-        if event.keysym in ('Left', 'Right', 'Down') and self.flags[event.keysym]:
+        if event.keysym in ('Left', 'Right', 'Down') and self.flags[event.keysym] and not self.pause:
             self.counter = 0
             self.move(event.keysym.lower())
-        elif event.keysym == 'Up':
+        elif event.keysym == 'Up' and not self.pause:
             tmp = self.up()
             if tmp:
                 self.center, self.figure = (tmp[-2], tmp) if set(tmp[1:-2]) <= self.heap else (self.center, self.figure)
                 self.draw()
-        if event.keysym == 'Return':
+        elif event.keysym == 'Return':
             if self.pause:
                 self.pause = False
                 self.motion()
@@ -72,7 +72,7 @@ class Figure:
             self.x = root.after(150 if self.counter == 1 else 30, lambda: self.move(string))
 
     def stop(self, event):
-        if event.keysym in ('Left', 'Right', 'Down'):
+        if event.keysym in ('Left', 'Right', 'Down') and not self.pause:
             self.flags[event.keysym] = True
             root.after_cancel(self.x) if self.x else None
 
