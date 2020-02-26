@@ -10,8 +10,8 @@ class Matrix:
         self.state = None
         self.pause = False
         self.grid = [(i, j) for i in range(2, 400, 10) for j in range(2, 500, 10)]
-        self.snake_grid = [random.choice(self.grid)]
-        self.direction = random.choice(list(self.DIRECTIONS.values()))
+        self.snake_grid = [(2, 2)]
+        self.direction = (10, 0)
         self.snake = [window.create_rectangle(i, j, i + 10, j + 10, fill='#0F0') for i, j in self.snake_grid]
         self.food_grid = random.choice(list(set(self.grid) - set(self.snake_grid)))
         self.food = [window.create_rectangle(i, j, i + 10, j + 10, fill='#F00') for i, j in [self.food_grid]]
@@ -38,7 +38,7 @@ class Matrix:
 
     def binds(self, event):
         self.direction = self.DIRECTIONS[event.keysym] if event.keysym in (
-            'Left', 'Right', 'Up', 'Down') else self.direction
+            'Left', 'Right', 'Up', 'Down') and not self.pause else self.direction
         if event.keysym == 'Return':
             if self.pause:
                 self.motion()
