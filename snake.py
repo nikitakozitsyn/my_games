@@ -37,8 +37,10 @@ class Matrix:
         self.state = root.after(self.speed, self.motion)
 
     def binds(self, event):
-        self.direction = self.DIRECTIONS[event.keysym] if event.keysym in (
-            'Left', 'Right', 'Up', 'Down') and not self.pause else self.direction
+        if self.DIRECTIONS.get(event.keysym) in set(self.DIRECTIONS.values()) - {self.direction} and not self.pause:
+            root.after_cancel(self.state)
+            self.direction = self.DIRECTIONS[event.keysym]
+            self.motion()
         if event.keysym == 'Return':
             if self.pause:
                 self.motion()
