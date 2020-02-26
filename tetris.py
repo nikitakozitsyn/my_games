@@ -15,6 +15,10 @@ class Figure:
     POINTS = {0: 0, 1: 100, 2: 300, 3: 700, 4: 1500}
 
     def __init__(self):
+        self.state = None
+        self.counter = 0
+        self.x = None
+        self.flags = {'Left': True, 'Right': True, 'Down': True}
         self.score = 0, 0
         self.pause = False
         self.table = []
@@ -42,16 +46,35 @@ class Figure:
         score.config(text=f'SCORE:\n{self.score[0]}\n\nLINES:\n{self.score[1]}')
 
     def binds(self, event):
-        tmp = eval(f'self.{event.keysym.lower()}()') if event.keysym in ('Left', 'Right', 'Up', 'Down') else None
-        if tmp:
-            self.center, self.figure = (tmp[-2], tmp) if set(tmp[1:-2]) <= self.heap else (self.center, self.figure)
-            self.draw()
+        if event.keysym in ('Left', 'Right', 'Down') and self.flags[event.keysym]:
+            self.counter = 0
+            self.move(event.keysym.lower())
+        elif event.keysym == 'Up':
+            tmp = self.up()
+            if tmp:
+                self.center, self.figure = (tmp[-2], tmp) if set(tmp[1:-2]) <= self.heap else (self.center, self.figure)
+                self.draw()
         if event.keysym == 'Return':
             if self.pause:
                 self.pause = False
                 self.motion()
             else:
+                root.after_cancel(self.state)
                 self.pause = True
+
+    def move(self, string):
+        tmp = eval(f'self.{string}()')
+        if tmp:
+            self.center, self.figure = (tmp[-2], tmp) if set(tmp[1:-2]) <= self.heap else (self.center, self.figure)
+            self.draw()
+            self.flags[string.title()] = False
+            self.counter += 1
+            self.x = root.after(150 if self.counter == 1 else 30, lambda: self.move(string))
+
+    def stop(self, event):
+        if event.keysym in ('Left', 'Right', 'Down'):
+            self.flags[event.keysym] = True
+            root.after_cancel(self.x) if self.x else None
 
     def draw(self):
         for o in self.object:
@@ -114,7 +137,7 @@ class Figure:
             self.shift()
             self.renew()
         self.draw()
-        None if self.pause else root.after(self.speed, self.motion)
+        self.state = root.after(self.speed, self.motion)
 
 
 root = tk.Tk()
@@ -126,7 +149,8 @@ window.create_line(203, 0, 203, 404, fill='#FFF')
 score = tk.Label(s, height=20, width=8, bg='#333', font='Arial 12 bold', text='SCORE:\n0\n\nLINES:\n0')
 score.grid(row=0, column=1)
 f = Figure()
-root.bind('<Key>', f.binds)
+root.bind('<KeyPress>', f.binds)
+root.bind('<KeyRelease>', f.stop)
 
 root.bind('<Escape>', lambda event: sys.exit())
 root.mainloop()
