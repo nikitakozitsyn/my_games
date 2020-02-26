@@ -15,9 +15,10 @@ class Figure:
     POINTS = {0: 0, 1: 100, 2: 300, 3: 700, 4: 1500}
 
     def __init__(self):
+        self.rotate = True
         self.state = None
         self.counter = 0
-        self.x = None
+        self.x = {'Left': None, 'Right': None, 'Down': None}
         self.flags = {'Left': True, 'Right': True, 'Down': True}
         self.score = 0, 0
         self.pause = False
@@ -49,11 +50,12 @@ class Figure:
         if event.keysym in ('Left', 'Right', 'Down') and self.flags[event.keysym] and not self.pause:
             self.counter = 0
             self.move(event.keysym.lower())
-        elif event.keysym == 'Up' and not self.pause:
+        elif event.keysym == 'Up' and not self.pause and self.rotate:
             tmp = self.up()
             if tmp:
                 self.center, self.figure = (tmp[-2], tmp) if set(tmp[1:-2]) <= self.heap else (self.center, self.figure)
                 self.draw()
+            self.rotate = False
         elif event.keysym == 'Return':
             if self.pause:
                 self.pause = False
@@ -69,12 +71,14 @@ class Figure:
             self.draw()
             self.flags[string.title()] = False
             self.counter += 1
-            self.x = root.after(150 if self.counter == 1 else 30, lambda: self.move(string))
+            self.x[string.title()] = root.after(120 if self.counter == 1 else 20, lambda: self.move(string))
 
     def stop(self, event):
         if event.keysym in ('Left', 'Right', 'Down') and not self.pause:
             self.flags[event.keysym] = True
-            root.after_cancel(self.x) if self.x else None
+            root.after_cancel(self.x[event.keysym]) if self.x[event.keysym] else None
+        if event.keysym == 'Up':
+            self.rotate = True
 
     def draw(self):
         for o in self.object:
