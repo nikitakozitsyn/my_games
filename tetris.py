@@ -71,7 +71,7 @@ class Figure:
             self.draw()
             self.flags[string.title()] = False
             self.counter += 1
-            self.x[string.title()] = root.after(120 if self.counter == 1 else 20, lambda: self.move(string))
+            self.x[string.title()] = root.after(130 if self.counter == 1 else 30, lambda: self.move(string))
 
     def stop(self, event):
         if event.keysym in ('Left', 'Right', 'Down') and not self.pause:
