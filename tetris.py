@@ -86,7 +86,7 @@ class Figure:
                     self.next[1:-2]]
 
     def renew(self):
-        self.figure = self.next
+        self.figure = [self.next[0]] + [(x + 80, y) for x, y in self.next[1:-1]] + [self.next[-1]]
         self.next = rd.choice(self.FIGURES)[:]
         self.center = self.figure[-2]
         self.color = self.figure[-1]
