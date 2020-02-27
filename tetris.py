@@ -17,7 +17,7 @@ class Figure:
     def __init__(self):
         self.rotate = True
         self.state = None
-        self.counter = 0
+        self.counter = {}
         self.x = {'Left': None, 'Right': None, 'Down': None}
         self.flags = {'Left': True, 'Right': True, 'Down': True}
         self.score = 0, 0
@@ -48,8 +48,8 @@ class Figure:
 
     def binds(self, event):
         if event.keysym in ('Left', 'Right', 'Down') and self.flags[event.keysym] and not self.pause:
-            self.counter = 0
-            self.move(event.keysym.lower())
+            self.counter[event.keysym] = 0
+            self.move(event.keysym)
         elif event.keysym == 'Up' and not self.pause and self.rotate:
             tmp = self.up()
             if tmp:
@@ -65,13 +65,13 @@ class Figure:
                 self.pause = True
 
     def move(self, string):
-        tmp = eval(f'self.{string}()')
+        tmp = eval(f'self.{string.lower()}()')
         if tmp:
             self.center, self.figure = (tmp[-2], tmp) if set(tmp[1:-2]) <= self.heap else (self.center, self.figure)
             self.draw()
-            self.flags[string.title()] = False
-            self.counter += 1
-            self.x[string.title()] = root.after(130 if self.counter == 1 else 30, lambda: self.move(string))
+            self.flags[string] = False
+            self.counter[string] += 1
+            self.x[string] = root.after(130 if self.counter[string] == 1 else 30, lambda: self.move(string))
 
     def stop(self, event):
         if event.keysym in ('Left', 'Right', 'Down') and not self.pause:
