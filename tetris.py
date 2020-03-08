@@ -26,6 +26,8 @@ class Figure:
         self.figure = rd.choice(self.FIGURES)
         self.figure = [self.figure[0]] + [(x + 80, y) for x, y in self.figure[1:-1]] + [self.figure[-1]]
         self.next = rd.choice(self.FIGURES)
+        while self.next[-1] == self.figure[-1]:
+            self.next = rd.choice(self.FIGURES)[:]
         self.obj = [window.create_rectangle(x + 200, y + 200, x + 220, y + 220, fill=self.next[-1]) for x, y in
                     self.next[1:-2]]
         self.heap = {(i, j) for i in range(2, 198, 20) for j in range(2, 398, 20)}
