@@ -92,6 +92,8 @@ class Figure:
     def renew(self):
         self.figure = [self.next[0]] + [(x + 80, y) for x, y in self.next[1:-1]] + [self.next[-1]]
         self.next = rd.choice(self.FIGURES)[:]
+        while self.next[-1] == self.figure[-1]:
+            self.next = rd.choice(self.FIGURES)[:]
         self.center = self.figure[-2]
         self.color = self.figure[-1]
         None if set(self.figure[1:-2]) <= self.heap else sys.exit()
